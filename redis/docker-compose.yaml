@@ -7,34 +7,37 @@ networks:
 services:
   redis-cluster-master:
     image: bitnami/redis:latest
+    hostname: redis-cluster-master
     env_file:
       - redis.env
     environment:
       - REDIS_REPLICATION_MODE=master
     networks:
       - redis-cluster
+    ports:
+      - 6379:6379
   redis-cluster-slave1:
     image: bitnami/redis:latest
+    hostname: redis-cluster-slave1
     env_file:
       - redis.env
-    environment:
-      - REDIS_REPLICATION_MODE=slave
-      - REDIS_MASTER_HOST=redis-cluster-master
-      - REDIS_MASTER_PORT_NUMBER=6379
+      - redis-slave.env
     networks:
       - redis-cluster
+    ports:
+      - 6378:6379
     depends_on:
       - redis-cluster-master
   redis-cluster-slave2:
     image: bitnami/redis:latest
+    hostname: redis-cluster-slave2
     env_file:
       - redis.env
-    environment:
-      - REDIS_REPLICATION_MODE=slave
-      - REDIS_MASTER_HOST=redis-cluster-master
-      - REDIS_MASTER_PORT_NUMBER=6379
+      - redis-slave.env
     networks:
       - redis-cluster
+    ports:
+      - 6377:6379
     depends_on:
       - redis-cluster-master
 
