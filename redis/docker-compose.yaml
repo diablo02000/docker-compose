@@ -1,0 +1,41 @@
+version: '3.7'
+
+networks:
+  redis-cluster:
+    driver: bridge
+
+services:
+  redis-cluster-master:
+    image: bitnami/redis:latest
+    env_file:
+      - redis.env
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    networks:
+      - redis-cluster
+  redis-cluster-slave1:
+    image: bitnami/redis:latest
+    env_file:
+      - redis.env
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis-cluster-master
+      - REDIS_MASTER_PORT_NUMBER=6379
+    networks:
+      - redis-cluster
+    depends_on:
+      - redis-cluster-master
+  redis-cluster-slave2:
+    image: bitnami/redis:latest
+    env_file:
+      - redis.env
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis-cluster-master
+      - REDIS_MASTER_PORT_NUMBER=6379
+    networks:
+      - redis-cluster
+    depends_on:
+      - redis-cluster-master
+
+
