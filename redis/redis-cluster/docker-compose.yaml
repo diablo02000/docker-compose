@@ -70,7 +70,7 @@ services:
     networks:
       - redis
     restart: "no"
-    entrypoint: ["bash", "-c", "sleep 5 & redis-cli --cluster create redis-1:7000 redis-2:7001 redis-3:7002 redis-4:7003 redis-5:7004 redis-6:7005 --cluster-replicas 1"]
+    entrypoint: ["bash", "-c", "sleep 5 & redis-cli --cluster create redis-1:7000 redis-2:7001 redis-3:7002 redis-4:7003 redis-5:7004 redis-6:7005 --cluster-replicas 1 --cluster-yes"]
     depends_on:
       - redis-1
       - redis-2
