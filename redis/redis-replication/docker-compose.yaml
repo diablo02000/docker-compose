@@ -1,44 +1,41 @@
 version: '3.7'
 
 networks:
-  redis-cluster:
+  redis:
     driver: bridge
 
 services:
-  redis-cluster-master:
-    image: bitnami/redis:latest
-    hostname: redis-cluster-master
-    env_file:
-      - redis.env
-    environment:
-      - REDIS_REPLICATION_MODE=master
+  redis-master:
+    image: redis:latest
+    hostname: redis-master
     networks:
-      - redis-cluster
+      - redis
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
     ports:
       - 6379:6379
-  redis-cluster-slave1:
-    image: bitnami/redis:latest
-    hostname: redis-cluster-slave1
-    env_file:
-      - redis.env
-      - redis-slave.env
+    command: --port 6379
+  redis-slave1:
+    image: redis:latest
+    hostname: redis-slave1
     networks:
-      - redis-cluster
+      - redis
     ports:
-      - 6378:6379
+      - 6378:6378
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
     depends_on:
-      - redis-cluster-master
-  redis-cluster-slave2:
-    image: bitnami/redis:latest
-    hostname: redis-cluster-slave2
-    env_file:
-      - redis.env
-      - redis-slave.env
+      - redis-master
+    command: --port 6378 --replicaof redis-master 6379
+  redis-slave2:
+    image: redis:latest
+    hostname: redis-slave2
     networks:
-      - redis-cluster
+      - redis
     ports:
-      - 6377:6379
+      - 6377:6377
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
     depends_on:
-      - redis-cluster-master
-
-
+      - redis-master
+    command: --port 6377 --replicaof redis-master 6379
