@@ -1,0 +1,29 @@
+version: '3.7'
+
+networks:
+  varnish:
+    driver: bridge
+
+services:
+  varnish:
+    image: varnish:latest
+    hostname: varnish
+    networks:
+      - varnish
+    volumes:
+      - ./default.vcl:/etc/varnish/default.vcl:ro
+    tmpfs:
+      - /var/lib/varnish/varnishd:exec
+    environment:
+      - VARNISH_SIZE=2G
+    ports:
+      - 80:80
+    depends_on:
+      - caddy
+  caddy:
+    image: caddy:latest
+    hostname: caddy
+    networks:
+      - varnish
+    ports:
+      - 8080:80
