@@ -6,71 +6,60 @@ networks:
 
 services:
   redis-1:
-    image: redis:latest
+    image: &docker_image redis:latest
     hostname: redis-1
-    networks:
+    networks: &networks
       - redis
     ports:
       - 7000:7000
-    volumes:
+    volumes: &volumes
       - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
-    command: redis-server /usr/local/etc/redis/redis.conf --port 7000
+    command: redis-server /usr/local/etc/redis/redis.conf
   redis-2:
-    image: redis:latest
+    image: *docker_image
     hostname: redis-2
-    networks:
-      - redis
+    networks: *networks
     ports:
-      - 7001:7001
-    volumes:
-      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
-    command: redis-server /usr/local/etc/redis/redis.conf --port 7001
+      - 7001:7000
+    volumes: *volumes
+    command: redis-server /usr/local/etc/redis/redis.conf
   redis-3:
-    image: redis:latest
+    image: *docker_image
     hostname: redis-3
-    networks:
-      - redis
+    networks: *networks
     ports:
-      - 7002:7002
-    volumes:
-      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
-    command: redis-server /usr/local/etc/redis/redis.conf --port 7002
+      - 7002:7000
+    volumes: *volumes
+    command: redis-server /usr/local/etc/redis/redis.conf
   redis-4:
-    image: redis:latest
+    image: *docker_image
     hostname: redis-4
-    networks:
-      - redis
+    networks: *networks
     ports:
-      - 7003:7003
-    volumes:
-      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
-    command: redis-server /usr/local/etc/redis/redis.conf --port 7003
+      - 7003:7000
+    volumes: *volumes
+    command: redis-server /usr/local/etc/redis/redis.conf
   redis-5:
-    image: redis:latest
+    image: *docker_image
     hostname: redis-5
-    networks:
-      - redis
+    networks: *networks
     ports:
-      - 7004:7004
-    volumes:
-      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
-    command: redis-server /usr/local/etc/redis/redis.conf --port 7004
+      - 7004:7000
+    volumes: *volumes
+    command: redis-server /usr/local/etc/redis/redis.conf
   redis-6:
-    image: redis:latest
+    image: *docker_image
     hostname: redis-6
-    networks:
-      - redis
+    networks: *networks
     ports:
-      - 7005:7005
-    volumes:
-      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
-    command: redis-server /usr/local/etc/redis/redis.conf --port 7005
+      - 7005:7000
+    volumes: *volumes
+    command: redis-server /usr/local/etc/redis/redis.conf
   redis-cluster-setup:
-    image: redis:latest
-    networks:
-      - redis
+    image: *docker_image
+    networks: *networks
     restart: "no"
-    entrypoint: ["bash", "-c", "sleep 5 & redis-cli --cluster create redis-1:7000 redis-2:7001 redis-3:7002 redis-4:7003 redis-5:7004 redis-6:7005 --cluster-replicas 1 --cluster-yes"]
+    entrypoint: ["bash", "-c", "sleep 5 & redis-cli --cluster create redis-1:7000 redis-2:7000 redis-3:7000 redis-4:7000 redis-5:7000 redis-6:7000 --cluster-replicas 1 --cluster-yes"]
     depends_on:
       - redis-1
       - redis-2
