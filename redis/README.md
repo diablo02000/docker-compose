@@ -1,8 +1,8 @@
-# Redis cluster
+# Redis
 
 ## Description
 
-Start Redis cluster with master/slave replication.
+Start a Redis cluster with master/slave replication or a simplet replication cluster.
 
 ## Configuration
 
